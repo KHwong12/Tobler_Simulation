@@ -1,0 +1,59 @@
+---
+title: "Test"
+author: "Kenneth Wong"
+date: "8/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+```
+
+
+
+```{r}
+
+rad2deg <- function(rad) {(rad * 180) / (pi)}
+deg2rad <- function(deg) {(deg * pi) / (180)}
+
+
+toblers_hiking_function <- function(slope_angle, max_speed = 6) {
+
+  max_speed * exp(-3.5 * abs(tan(deg2rad(slope_angle)) + 0.05))
+}
+
+```
+
+```{r}
+
+
+```
+
+
+## Method 1: Use stat_function
+
+```{r}
+base <- ggplot(data.frame(x = c(-60, 60)), aes(x))
+
+base +
+  stat_function(fun = toblers_hiking_function, n = 600) +
+  theme_minimal()
+
+```
+
+## Method 2: Create dummy data
+
+```{r}
+dummydata <- data.frame(slope_angle = seq(-60, 60, by = .1),
+                        speed = toblers_hiking_function(dummydata$slope_angle))
+
+ggplot(dummydata, aes(x = slope_angle, y = speed)) +
+  geom_line() +
+  theme_minimal()
+
+```
+
