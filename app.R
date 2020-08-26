@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(plotly)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -18,31 +19,59 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+            sliderInput("speed",
+                        "Walking Speed",
+                        min = 0.1,
+                        max = 10,
+                        value = 6)
         ),
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot")
+            plotlyOutput("distPlot")
         )
     )
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, ...) {
 
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    # output$distPlot <- renderPlot({
+    # 
+    # 
+    #     plot <- ggplot(data.frame(x = c(-60, 60)), aes(x)) +
+    #         stat_function(fun = function(x) toblers_hiking_function(slope_angle = x, max_speed = input$speed), n = 600) +
+    #         ylim(0,6) +
+    #         theme_minimal()
+    #     
+    #     plot
+    # 
+    # })
+    
+    
+    
 
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    
+    
+    output$distPlot <- renderPlotly({
+
+        req(input$speed)
+        
+        
+        
+        dummydata <- data.frame(slope = seq(-60, 60, by = .2)) %>%
+            mutate(speed = toblers_hiking_function(slope_angle = slope, max_speed = input$speed))
+        
+
+        
+        # tobler_plot <- ggplot(dummydata, aes(x = slope, y = speed)) +
+        #     geom_line()
+        # 
+        # ggplotly(tobler_plot)
+        
+        plot_ly(dummydata, x = ~slope, y = ~speed) %>% add_lines()
     })
+    
 }
 
 # Run the application 

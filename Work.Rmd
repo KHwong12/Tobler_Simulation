@@ -48,8 +48,8 @@ base +
 ## Method 2: Create dummy data
 
 ```{r}
-dummydata <- data.frame(slope_angle = seq(-60, 60, by = .1),
-                        speed = toblers_hiking_function(dummydata$slope_angle))
+dummydata <- data.frame(slope_angle = seq(-60, 60, by = .5)) %>%
+  mutate(speed = toblers_hiking_function(slope_angle))
 
 ggplot(dummydata, aes(x = slope_angle, y = speed)) +
   geom_line() +
@@ -57,3 +57,17 @@ ggplot(dummydata, aes(x = slope_angle, y = speed)) +
 
 ```
 
+
+## Method 3: Use geom_function
+
+```{r}
+
+input <- 
+
+ggplot() + xlim(-60, 60) +
+  geom_function(fun = toblers_hiking_function, n = 1200) +
+  
+  
+  
+
+```
