@@ -76,6 +76,5 @@ https://stackoverflow.com/questions/37411920/how-to-write-equation-including-abs
 
 $$
 W = 6e^{-3.5 \times \left\lvert tan \theta + 0.05 \right\rvert} 
-
 $$
 

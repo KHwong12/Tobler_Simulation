@@ -18,8 +18,10 @@ source("R/tobler.R")
 ui <- fluidPage(
   theme = shinytheme("flatly"),
 
-  # Application title
+  # Application title ----------
   titlePanel("Tobler's hiking function"),
+  
+  # Top panel ----------
   
   fluidRow(
     
@@ -43,25 +45,30 @@ ui <- fluidPage(
   
   hr(),
   
+  # Bottom panel ----------
+  
   h2("Examples"),
   
   fluidRow(
     column(3,
-           h4("100m path, flat surface"),
+           h4("50m path, flat terrain"),
+           htmlOutput("eg1_picture"),
            p("The walking time will be:"),
            textOutput(outputId = "eg1_uphill"),
            textOutput(outputId = "eg1_downhill"),           
            ),
     
     column(3,
-           h4("40m path, 2.86° slope"),
+           h4("50m path, 2.86° slope"),
+           htmlOutput("eg2_picture"),
            p("The walking time will be:"),
            textOutput(outputId = "eg2_uphill"),
            textOutput(outputId = "eg2_downhill"),             
     ),
     
     column(3,
-           h4("25m, 30° slope"),
+           h4("50m path, 20° slope"),
+           htmlOutput("eg3_picture"),
            p("The walking time will be:"),
            textOutput(outputId = "eg3_uphill"),
            textOutput(outputId = "eg3_downhill"),   
@@ -83,6 +90,7 @@ ui <- fluidPage(
              value = 5
            ),
            
+           p("The walking time will be:"),
            textOutput(outputId = "custom_uphill"),
            textOutput(outputId = "custom_downhill"),  
            )
@@ -139,33 +147,35 @@ server <- function(input, output, ...) {
   
   # Render walking time
   
+  PATH_LEGNTH <- 50
+  
   output$eg1_uphill <- renderText({
-    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, 100)
+    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, PATH_LEGNTH)
     paste("Uphill:", round(time, 2), "s")
   })
   
   output$eg1_downhill <- renderText({
-    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, 100)
+    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, PATH_LEGNTH)
     paste("Downhill:", round(time, 2), "s.")
   })
 
   output$eg2_uphill <- renderText({
-    time <- walking_time(toblers_hiking_function(2.86, input$speed) / 3.6, 40)
+    time <- walking_time(toblers_hiking_function(2.86, input$speed) / 3.6, PATH_LEGNTH)
     paste("Uphill:", round(time, 2), "s")
   })
   
   output$eg2_downhill <- renderText({
-    time <- walking_time(toblers_hiking_function(-2.86, input$speed) / 3.6, 40)
+    time <- walking_time(toblers_hiking_function(-2.86, input$speed) / 3.6, PATH_LEGNTH)
     paste("Downhill:", round(time, 2), "s")
   })  
 
   output$eg3_uphill <- renderText({
-    time <- walking_time(toblers_hiking_function(30, input$speed) / 3.6, 40)
+    time <- walking_time(toblers_hiking_function(20, input$speed) / 3.6, PATH_LEGNTH)
     paste("Uphill:", round(time, 2), "s")
   })
   
   output$eg3_downhill <- renderText({
-    time <- walking_time(toblers_hiking_function(-30, input$speed) / 3.6, 40)
+    time <- walking_time(toblers_hiking_function(-20, input$speed) / 3.6, PATH_LEGNTH)
     paste("Downhill:", round(time, 2), "s")
   })
   
@@ -178,6 +188,15 @@ server <- function(input, output, ...) {
     time <- walking_time(toblers_hiking_function(-input$custom_slope, input$speed) / 3.6, input$custom_length)
     paste("Downhill:", round(time, 2), "s")
   })  
+  
+  
+  eg1_src = "https://1.bp.blogspot.com/-wEygfnu5_mc/V5jHkBSzzLI/AAAAAAAA80w/DdLElofgt_Qn8RbZStkfWjnXhIH8n7cpgCLcB/s200/walking_businesswoman.png"
+  output$eg1_picture<-renderText({c('<img src="', eg1_src, '">')})
+  
+  
+  eg3_src = "https://2.bp.blogspot.com/-78mChg3NsLQ/VGLMgDJiciI/AAAAAAAApBk/3zAG9kQK1Fg/s200/noborizaka_saka.png"
+  output$eg3_picture<-renderText({c('<img src="', eg3_src, '">')})
+  
   
 }
 
