@@ -68,7 +68,7 @@ output = list()
 
 
 ```{r}
-atan(1/5) %>% rad2deg()
+toblers_hiking_function(flat_terrain_speed = 5)
 ```
 
 Absolute value ref:
@@ -77,4 +77,6 @@ https://stackoverflow.com/questions/37411920/how-to-write-equation-including-abs
 $$
 W = 6e^{-3.5 \times \left\lvert tan \theta + 0.05 \right\rvert} 
 $$
+
+
 

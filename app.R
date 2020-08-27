@@ -1,11 +1,5 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+
+# Shiny application for simulating Tobler's hiking function
 
 library(shiny)
 library(shinythemes)
@@ -31,18 +25,25 @@ ui <- fluidPage(
     
     withMathJax(),
     
-    column(3,
-           helpText	("Tobler's hiking function is an exponential function determining the hiking speed, taking into account the slope angle. It was formulated by Waldo Tobler. This function was estimated from empirical data of Eduard Imhof."),
+    column(4,
+           p("Tobler's hiking function is an exponential function determining the hiking speed, taking into account the slope angle. It was formulated by Waldo Tobler. This function was estimated from empirical data of Eduard Imhof."),
+           p("The equation takes the following form:"),
            uiOutput("equation"),
+           
+           p("This web application lets you to play with the parameters of the equation to see how the walking time changes."),
+           
+           
            sliderInput(
              inputId = "speed",
              label = "Walking speed on flat surface (km/hr)",
              min = 0.1, max = 8, step = .1,
              value = 5
            )
+           
+           
     ),
     
-    column(9,
+    column(8,
            plotlyOutput("toblerPlot")
     )
   ),
@@ -96,17 +97,25 @@ ui <- fluidPage(
            h4("What about..."),
            sliderInput(
              inputId = "custom_slope",
-             label = "Slope (°)",
+             label = "Slope (degree)",
              min = 0, max = 45, step = .5,
-             value = 5
+             value = 5,
+             width = "100%"
            ),
            
            p("The walking time will be:"),
            textOutput(outputId = "custom_uphill"),
            textOutput(outputId = "custom_downhill"),  
            )
-  )
+  ),
   
+  hr(),
+  
+  # Footer ---------------
+  div(class = "footer",
+      includeHTML("template/footer.html")
+  )
+
 )
 
 # Define server logic required to draw a histogram
@@ -144,11 +153,8 @@ server <- function(input, output, ...) {
 
   })
   
-  # TODO: possibly use lapply would be more efficient
-  # https://community.rstudio.com/t/how-do-i-use-for-loop-in-rendering-outputs/35761
-  
-  
-  # Render equation
+
+  # Render equation ------------------
   # double backslash required to avoid being truncated
   # https://shiny.rstudio.com/gallery/mathjax.html
   
@@ -158,19 +164,31 @@ server <- function(input, output, ...) {
     )
   })
   
-  # Render walking time
+  # Render walking time ----------
+  # TODO: possibly use lapply would be more efficient
+  # https://community.rstudio.com/t/how-do-i-use-for-loop-in-rendering-outputs/35761
   
+  # lapply(1:3, function(example_num) {
+  #   outputId <- paste0("eg", example_num, "_uphill")
+  #   
+  #   time <- walking_time(toblers_hiking_function(input$speed) / 3.6, input$custom_length)
+  #   
+  #   output[[outputId]] <- renderText("Uphill:", round(time, 2), "s")
+  #   
+  #   
+  #   
+  # })
   
   output$eg1_uphill <- renderText({
-    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, input$custom_length)
+    time <- walking_time(toblers_hiking_function(0, input$speed) / 3.6, input$custom_length)
     paste("Uphill:", round(time, 2), "s")
   })
   
   output$eg1_downhill <- renderText({
-    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, input$custom_length)
+    time <- walking_time(toblers_hiking_function(0, input$speed) / 3.6, input$custom_length)
     paste("Downhill:", round(time, 2), "s.")
   })
-
+  
   output$eg2_uphill <- renderText({
     time <- walking_time(toblers_hiking_function(2.86, input$speed) / 3.6, input$custom_length)
     paste("Uphill:", round(time, 2), "s")
@@ -179,8 +197,8 @@ server <- function(input, output, ...) {
   output$eg2_downhill <- renderText({
     time <- walking_time(toblers_hiking_function(-2.86, input$speed) / 3.6, input$custom_length)
     paste("Downhill:", round(time, 2), "s")
-  })  
-
+  })
+  
   output$eg3_uphill <- renderText({
     time <- walking_time(toblers_hiking_function(20, input$speed) / 3.6, input$custom_length)
     paste("Uphill:", round(time, 2), "s")
