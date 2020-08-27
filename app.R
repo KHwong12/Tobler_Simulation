@@ -9,6 +9,10 @@ library(magrittr)
 
 source("R/tobler.R")
 
+# Types of input widgets
+# https://shiny.rstudio.com/tutorial/written-tutorial/lesson3/
+
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   
@@ -16,8 +20,12 @@ ui <- fluidPage(
   theme = shinytheme("flatly"),
   includeCSS("style.css"),
 
-  # Application title ----------
+  # Head ----------
   titlePanel("Tobler's hiking function"),
+  
+  h3("Simulating the effects of terrain slope to walking speed"),
+  
+  hr(),
   
   # Top panel ----------
   
@@ -25,12 +33,19 @@ ui <- fluidPage(
     
     withMathJax(),
     
+    
     column(4,
+           
+           strong(p("NOTE: This application is still in development.")),
+           
+           
            p("Tobler's hiking function is an exponential function determining the hiking speed, taking into account the slope angle. It was formulated by Waldo Tobler. This function was estimated from empirical data of Eduard Imhof."),
            p("The equation takes the following form:"),
            uiOutput("equation"),
            
            p("This web application lets you to play with the parameters of the equation to see how the walking time changes."),
+           
+           p("Drag the slider below to change the walking speed and see how the relationship between slope of the path and walking speed changes accordingly."),
            
            
            sliderInput(
@@ -52,7 +67,7 @@ ui <- fluidPage(
   
   # Bottom panel ----------
   
-  h2("How long does it take?"),
+  h3("How long does it take?"),
   
   p("With your walking speed given above, how long does take to finish the path with the slope of...?"),
   
@@ -126,14 +141,14 @@ server <- function(input, output, ...) {
     
     req(input$speed)
     
-    speed_flat_terrain <- toblers_hiking_function(0, flat_terrain_speed = input$speed)
+    speed_flat_terrain <- toblers_hiking_function(0, input$speed)
 
-    dummydata <- data.frame(slope = seq(-45, 45, by = .2)) %>%
-      mutate(speed = toblers_hiking_function(slope_angle = slope, flat_terrain_speed = input$speed))
+    dummydata <- data.frame(slope = seq(-45, 45, by = .05)) %>%
+      mutate(speed = toblers_hiking_function(slope, input$speed))
 
     tobler_plot <- ggplot(dummydata, aes(x = slope, y = speed)) +
-      geom_line() +
-      geom_hline(yintercept = speed_flat_terrain, color = "red") +
+      geom_line(color = "#2c3e50") +
+      geom_hline(yintercept = speed_flat_terrain, color = "#e7298a", linetype = "dotdash") +
       ylim(0, 10) +
       theme_minimal() +
       labs(
