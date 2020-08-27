@@ -11,12 +11,16 @@ library(shiny)
 library(shinythemes)
 library(plotly)
 library(ggplot2)
+library(magrittr)
 
 source("R/tobler.R")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
+  
+  # Theme options --------
   theme = shinytheme("flatly"),
+  includeCSS("style.css"),
 
   # Application title ----------
   titlePanel("Tobler's hiking function"),
@@ -47,19 +51,31 @@ ui <- fluidPage(
   
   # Bottom panel ----------
   
-  h2("Examples"),
+  h2("How long does it take?"),
   
+  p("With your walking speed given above, how long does take to finish the path with the slope of...?"),
+  
+  numericInput(
+    inputId = "custom_length",
+    label = "Path length (m)",
+    min = 10, max = 1000, step = 10,
+    value = 100,
+    width = "20%"
+  ),
+
+
   fluidRow(
     column(3,
-           h4("50m path, flat terrain"),
-           htmlOutput("eg1_picture"),
+           h4("Flat Terrain"),
+           img(src = "https://1.bp.blogspot.com/-wEygfnu5_mc/V5jHkBSzzLI/AAAAAAAA80w/DdLElofgt_Qn8RbZStkfWjnXhIH8n7cpgCLcB/s200/walking_businesswoman.png"),
            p("The walking time will be:"),
            textOutput(outputId = "eg1_uphill"),
            textOutput(outputId = "eg1_downhill"),           
            ),
     
     column(3,
-           h4("50m path, 2.86° slope"),
+           h4("2.86° Slope"),
+           img(src = "https://1.bp.blogspot.com/-59_nvImHVnM/XkZdUFSPVeI/AAAAAAABXWQ/Vbu2acjd6dwZjOoQIhRGeYjKPY2EtUCewCNcBGAsYHQ/s200/yagai_kyoushitsu_casual_walk.png"),
            htmlOutput("eg2_picture"),
            p("The walking time will be:"),
            textOutput(outputId = "eg2_uphill"),
@@ -67,7 +83,8 @@ ui <- fluidPage(
     ),
     
     column(3,
-           h4("50m path, 20° slope"),
+           h4("20° Slope"),
+           img(src = "https://2.bp.blogspot.com/-78mChg3NsLQ/VGLMgDJiciI/AAAAAAAApBk/3zAG9kQK1Fg/s200/noborizaka_saka.png"),
            htmlOutput("eg3_picture"),
            p("The walking time will be:"),
            textOutput(outputId = "eg3_uphill"),
@@ -77,12 +94,6 @@ ui <- fluidPage(
     
     column(3,
            h4("What about..."),
-           sliderInput(
-             inputId = "custom_length",
-             label = "Path length (m)",
-             min = 10, max = 400, step = 5,
-             value = 100
-           ),
            sliderInput(
              inputId = "custom_slope",
              label = "Slope (°)",
@@ -120,15 +131,17 @@ server <- function(input, output, ...) {
         x = "Slope of the path (°)",
         y = "Walking speed (km/hr)"
       )
-
+    
+    ggplotly(tobler_plot)
 
     # should use geom_function instead
     # TODO: how to add shiny interactive input to geom_function()?
     # ggplot() + xlim(-60, 60) +
     #     geom_function(fun = toblers_hiking_function, n = 600)
 
+    # TODO: Manually add second axis, as ggplotly() does not support dual axis
+    # https://stackoverflow.com/questions/52833214/adding-second-y-axis-on-ggplotly
 
-    ggplotly(tobler_plot)
   })
   
   # TODO: possibly use lapply would be more efficient
@@ -147,35 +160,34 @@ server <- function(input, output, ...) {
   
   # Render walking time
   
-  PATH_LEGNTH <- 50
   
   output$eg1_uphill <- renderText({
-    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, PATH_LEGNTH)
+    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, input$custom_length)
     paste("Uphill:", round(time, 2), "s")
   })
   
   output$eg1_downhill <- renderText({
-    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, PATH_LEGNTH)
+    time <- walking_time(toblers_hiking_function(input$speed) / 3.6, input$custom_length)
     paste("Downhill:", round(time, 2), "s.")
   })
 
   output$eg2_uphill <- renderText({
-    time <- walking_time(toblers_hiking_function(2.86, input$speed) / 3.6, PATH_LEGNTH)
+    time <- walking_time(toblers_hiking_function(2.86, input$speed) / 3.6, input$custom_length)
     paste("Uphill:", round(time, 2), "s")
   })
   
   output$eg2_downhill <- renderText({
-    time <- walking_time(toblers_hiking_function(-2.86, input$speed) / 3.6, PATH_LEGNTH)
+    time <- walking_time(toblers_hiking_function(-2.86, input$speed) / 3.6, input$custom_length)
     paste("Downhill:", round(time, 2), "s")
   })  
 
   output$eg3_uphill <- renderText({
-    time <- walking_time(toblers_hiking_function(20, input$speed) / 3.6, PATH_LEGNTH)
+    time <- walking_time(toblers_hiking_function(20, input$speed) / 3.6, input$custom_length)
     paste("Uphill:", round(time, 2), "s")
   })
   
   output$eg3_downhill <- renderText({
-    time <- walking_time(toblers_hiking_function(-20, input$speed) / 3.6, PATH_LEGNTH)
+    time <- walking_time(toblers_hiking_function(-20, input$speed) / 3.6, input$custom_length)
     paste("Downhill:", round(time, 2), "s")
   })
   
@@ -187,15 +199,7 @@ server <- function(input, output, ...) {
   output$custom_downhill <- renderText({
     time <- walking_time(toblers_hiking_function(-input$custom_slope, input$speed) / 3.6, input$custom_length)
     paste("Downhill:", round(time, 2), "s")
-  })  
-  
-  
-  eg1_src = "https://1.bp.blogspot.com/-wEygfnu5_mc/V5jHkBSzzLI/AAAAAAAA80w/DdLElofgt_Qn8RbZStkfWjnXhIH8n7cpgCLcB/s200/walking_businesswoman.png"
-  output$eg1_picture<-renderText({c('<img src="', eg1_src, '">')})
-  
-  
-  eg3_src = "https://2.bp.blogspot.com/-78mChg3NsLQ/VGLMgDJiciI/AAAAAAAApBk/3zAG9kQK1Fg/s200/noborizaka_saka.png"
-  output$eg3_picture<-renderText({c('<img src="', eg3_src, '">')})
+  })
   
   
 }
