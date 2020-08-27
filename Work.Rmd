@@ -14,32 +14,10 @@ library(ggplot2)
 ```
 
 
-
 ```{r}
-
-rad2deg <- function(rad) {(rad * 180) / (pi)}
-deg2rad <- function(deg) {(deg * pi) / (180)}
-
-
-# The parameter in Tobler's hiking function uses maximum speed
-# Yet, flat terrain is mostly used
-# Therefore, reverse method by using given flat terrain speed input to calculate max speed parameter
-
-toblers_hiking_function <- function(slope_angle, flat_terrain_speed = 5.036742) {
-
-  
-  # Get max walking speed from flat terrain walking speed
-  max_speed = flat_terrain_speed / exp(-3.5 * 0.05)
-
-  max_speed * exp(-3.5 * abs(tan(deg2rad(slope_angle)) + 0.05))
-}
-
+source("R/tobler.R")
 ```
 
-```{r}
-
-
-```
 
 
 ## Method 1: Use stat_function
@@ -69,13 +47,35 @@ ggplot(dummydata, aes(x = slope_angle, y = speed)) +
 ## Method 3: Use geom_function
 
 ```{r}
-
-input <- 
-
-ggplot() + xlim(-60, 60) +
+plot <- ggplot() + xlim(-60, 60) +
   geom_function(fun = toblers_hiking_function, n = 1200) +
-  
-  
-  
+  scale_y_continuous(
+        "Walking speed (km/hr)",
+        sec.axis = sec_axis(~ . / 3.6, name = "Walking speed (m/s)")
+      )
 
+plot
 ```
+
+```{r}
+output = list()
+
+  lapply(1:3, function(i) {
+    outputId <- paste0("OUT", i)
+    output[[outputId]] <- renderPrint(i)
+  })
+```
+
+
+```{r}
+atan(1/5) %>% rad2deg()
+```
+
+Absolute value ref:
+https://stackoverflow.com/questions/37411920/how-to-write-equation-including-abs-inside-using-rmarkdown
+
+$$
+W = 6e^{-3.5 \times \left\lvert tan \theta + 0.05 \right\rvert} 
+
+$$
+

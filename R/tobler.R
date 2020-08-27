@@ -10,8 +10,8 @@ deg2rad <- function(deg) {(deg * pi) / (180)}
 #'
 #' Calculate walking speed as specific slope
 #'
-#' @param slope_angle 
-#' @param flat_terrain_speed 
+#' @param slope_angle slope in degree
+#' @param flat_terrain_speed walking speed on flat terrain, in km/hr
 #'
 #' @return
 #' @export
@@ -24,4 +24,8 @@ toblers_hiking_function <- function(slope_angle = 0, flat_terrain_speed = 5.0367
   max_speed = flat_terrain_speed / exp(-3.5 * 0.05)
   
   max_speed * exp(-3.5 * abs(tan(deg2rad(slope_angle)) + 0.05))
+}
+
+walking_time <- function(speed, path_length) {
+  path_length / speed
 }
