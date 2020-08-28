@@ -78,5 +78,30 @@ $$
 W = 6e^{-3.5 \times \left\lvert tan \theta + 0.05 \right\rvert} 
 $$
 
+```{r}
+
+custom_slope <- 20
+speed <- 5
+custom_length <- 100
+
+slope_list <- c(0, 2.86, 20, custom_slope)
+
+output <- list()
+
+  lapply(1:3, function(example_num) {
+    outputId <- paste0("eg", example_num, "_uphill")
+    
+    print(outputId)
+    
+    slope_speed <- toblers_hiking_function(slope_list[example_num], speed) / 3.6
+
+    time <- round(walking_time(slope_speed, custom_length), 2)
+
+    output[[outputId]] <- glue::glue("Time: {time}s")
+    
+    print(output)
+
+  })
+```
 
 

@@ -36,7 +36,7 @@ ui <- fluidPage(
     withMathJax(),
     
     
-    column(4,
+    column(5,
            
            strong(p("NOTE: This application is still in development.")),
            
@@ -63,24 +63,25 @@ ui <- fluidPage(
            # https://shiny.rstudio.com/articles/tag-glossary.html
            
            tags$ol(
-             tags$li("Drag the slider below to change the walking speed on flat ground."),
+             tags$li("Drag the slider to change the walking speed on flat ground."),
              tags$li("Move along the plot on the right to observe the relationship."),
              tags$li("Check the walking time for the selected paths below.")
            ),
            
-           br(),
+           br()
+           
+           
+    ),
+    
+    column(7,
            
            sliderInput(
              inputId = "speed",
              label = "Walking speed on flat surface (km/hr)",
              min = 0.1, max = 8, step = .1,
              value = 5
-           )
+           ),
            
-           
-    ),
-    
-    column(8,
            plotlyOutput("toblerPlot")
     )
   ),
