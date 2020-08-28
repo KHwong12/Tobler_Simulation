@@ -3,8 +3,10 @@
 
 library(shiny)
 library(shinythemes)
-library(plotly)
+
 library(ggplot2)
+library(plotly)
+
 library(magrittr)
 
 source("R/tobler.R")
@@ -25,7 +27,7 @@ ui <- fluidPage(
   
   h3("Simulating the effects of terrain slope to walking speed"),
   
-  hr(),
+  br(),
   
   # Top panel ----------
   
@@ -39,14 +41,34 @@ ui <- fluidPage(
            strong(p("NOTE: This application is still in development.")),
            
            
-           p("Tobler's hiking function is an exponential function determining the hiking speed, taking into account the slope angle. It was formulated by Waldo Tobler. This function was estimated from empirical data of Eduard Imhof."),
-           p("The equation takes the following form:"),
-           uiOutput("equation"),
+           p("This web application lets you to play with the parameters of Tobler's hiking function to see how the walking speed varies with slope of the path.
+             Tobler's hiking function is an exponential function determining the hiking speed, taking into account the slope angle.
+             It was formulated by Waldo Tobler. This function was estimated from empirical data of Eduard Imhof."),
            
-           p("This web application lets you to play with the parameters of the equation to see how the walking time changes."),
+           withMathJax(p("The walking speed $W$ could be expressed as:")),
            
-           p("Drag the slider below to change the walking speed and see how the relationship between slope of the path and walking speed changes accordingly."),
+           # Render equation ------------------
+           # double backslash required to avoid being truncated
+           # Inline math symbols needs to wrap with withMathJax() function
+           # https://shiny.rstudio.com/gallery/mathjax.html
            
+           p("$$ W = Me^{-3.5 \\times \\left\\lvert tan \\theta + 0.05 \\right\\rvert} $$"),
+           
+           withMathJax(p("Where $\\theta$ is the slope and $M$ is maximum walking speed.")),
+           
+           
+           h3("How to Use"),
+           
+           # Require to add tags$ for list
+           # https://shiny.rstudio.com/articles/tag-glossary.html
+           
+           tags$ol(
+             tags$li("Drag the slider below to change the walking speed on flat ground."),
+             tags$li("Move along the plot on the right to observe the relationship."),
+             tags$li("Check the walking time for the selected paths below.")
+           ),
+           
+           br(),
            
            sliderInput(
              inputId = "speed",
@@ -92,7 +114,6 @@ ui <- fluidPage(
     column(3,
            h4("2.86° Slope"),
            img(src = "https://1.bp.blogspot.com/-59_nvImHVnM/XkZdUFSPVeI/AAAAAAABXWQ/Vbu2acjd6dwZjOoQIhRGeYjKPY2EtUCewCNcBGAsYHQ/s200/yagai_kyoushitsu_casual_walk.png"),
-           htmlOutput("eg2_picture"),
            p("The walking time will be:"),
            textOutput(outputId = "eg2_uphill"),
            textOutput(outputId = "eg2_downhill"),             
@@ -101,7 +122,6 @@ ui <- fluidPage(
     column(3,
            h4("20° Slope"),
            img(src = "https://2.bp.blogspot.com/-78mChg3NsLQ/VGLMgDJiciI/AAAAAAAApBk/3zAG9kQK1Fg/s200/noborizaka_saka.png"),
-           htmlOutput("eg3_picture"),
            p("The walking time will be:"),
            textOutput(outputId = "eg3_uphill"),
            textOutput(outputId = "eg3_downhill"),   
@@ -167,17 +187,7 @@ server <- function(input, output, ...) {
     # https://stackoverflow.com/questions/52833214/adding-second-y-axis-on-ggplotly
 
   })
-  
 
-  # Render equation ------------------
-  # double backslash required to avoid being truncated
-  # https://shiny.rstudio.com/gallery/mathjax.html
-  
-  output$equation <- renderUI({
-    withMathJax(
-      helpText("$$ W = Me^{-3.5 \\times \\left\\lvert tan \\theta + 0.05 \\right\\rvert} $$")
-    )
-  })
   
   # Render walking time ----------
   # TODO: possibly use lapply would be more efficient
