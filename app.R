@@ -111,7 +111,8 @@ ui <- fluidPage(
     column(
       3,
       h4("Flat Terrain"),
-      img(src = "https://1.bp.blogspot.com/-wEygfnu5_mc/V5jHkBSzzLI/AAAAAAAA80w/DdLElofgt_Qn8RbZStkfWjnXhIH8n7cpgCLcB/s200/walking_businesswoman.png"),
+      img(src = "https://1.bp.blogspot.com/-wEygfnu5_mc/V5jHkBSzzLI/AAAAAAAA80w/DdLElofgt_Qn8RbZStkfWjnXhIH8n7cpgCLcB/s200/walking_businesswoman.png",
+          style = "height:200px;"),
       textOutput(outputId = "eg1_uphill"),
       textOutput(outputId = "eg1_downhill")
     ),
@@ -119,7 +120,8 @@ ui <- fluidPage(
     column(
       3,
       h4("2.86° Slope"),
-      img(src = "https://1.bp.blogspot.com/-59_nvImHVnM/XkZdUFSPVeI/AAAAAAABXWQ/Vbu2acjd6dwZjOoQIhRGeYjKPY2EtUCewCNcBGAsYHQ/s200/yagai_kyoushitsu_casual_walk.png"),
+      img(src = "https://1.bp.blogspot.com/-59_nvImHVnM/XkZdUFSPVeI/AAAAAAABXWQ/Vbu2acjd6dwZjOoQIhRGeYjKPY2EtUCewCNcBGAsYHQ/s200/yagai_kyoushitsu_casual_walk.png",
+          style = "height:200px;"),
       textOutput(outputId = "eg2_uphill"),
       textOutput(outputId = "eg2_downhill")
     ),
@@ -127,7 +129,8 @@ ui <- fluidPage(
     column(
       3,
       h4("20° Slope"),
-      img(src = "https://2.bp.blogspot.com/-78mChg3NsLQ/VGLMgDJiciI/AAAAAAAApBk/3zAG9kQK1Fg/s200/noborizaka_saka.png"),
+      img(src = "https://2.bp.blogspot.com/-78mChg3NsLQ/VGLMgDJiciI/AAAAAAAApBk/3zAG9kQK1Fg/s200/noborizaka_saka.png",
+          style = "height:200px;"),
       textOutput(outputId = "eg3_uphill"),
       textOutput(outputId = "eg3_downhill")
     ),
@@ -136,14 +139,21 @@ ui <- fluidPage(
     column(
       3,
       h4("What about..."),
-      br(),
-      sliderInput(
-        inputId = "custom_slope",
-        label = "Slope (degree)",
-        min = 0, max = 45, step = .5,
-        value = 5,
-        width = "100%"
-      ),
+      
+      # 200px height, same as the illustrations
+      div(
+        style = "height:200px;",
+        
+        br(),
+        br(),
+        
+        sliderInput(
+          inputId = "custom_slope",
+          label = "Slope (degree)",
+          min = 0, max = 45, step = .5,
+          value = 5,
+          width = "90%")
+        ),
 
       textOutput(outputId = "custom_uphill"),
       textOutput(outputId = "custom_downhill")
@@ -230,18 +240,18 @@ server <- function(input, output, session, ...) {
       slope_speed <- toblers_hiking_function(-slope_list[example_num], input$speed) / 3.6
       time_render <- round(walking_time(slope_speed, input$custom_length), 2)
       
-      glue::glue("Dowhill: {time_render}s")
+      glue::glue("Downhill: {time_render}s")
     })
   })
 
   output$custom_uphill <- renderText({
     time_render <- round(walking_time(toblers_hiking_function(input$custom_slope, input$speed) / 3.6, input$custom_length), 2)
-    glue::glue("Dowhill: {time_render}s")
+    glue::glue("Uphill: {time_render}s")
   })
 
   output$custom_downhill <- renderText({
     time_render <- round(walking_time(toblers_hiking_function(-input$custom_slope, input$speed) / 3.6, input$custom_length), 2)
-    glue::glue("Dowhill: {time_render}s")
+    glue::glue("Downhill: {time_render}s")
   })
 }
 

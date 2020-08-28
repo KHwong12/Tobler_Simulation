@@ -16,8 +16,12 @@ footer {
 }
 
 
+.shiny-text-output, .shiny-bound-output {
+  text-align: center;
+}
+
 /* Shiny widgets */
-/* https://stackoverflow.com/questions/31538767/how-to-change-shiny-widget-colour */
+/* https://stackoverflow.com/questions/31538767/how-to-change-shiny, -widget-colour */
 
 .irs-bar {
   background: #2c3e50;
