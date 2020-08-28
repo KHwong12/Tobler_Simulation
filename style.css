@@ -16,6 +16,8 @@ footer {
 }
 
 
+/* Rendered result text */
+
 .shiny-text-output, .shiny-bound-output {
   text-align: center;
 }
@@ -35,4 +37,10 @@ footer {
 
 .irs-single{
   background: #2c3e50;
+}
+
+
+/* Slider position */
+.form-group, .shiny-input-container {
+  margin: auto;
 }

@@ -41,17 +41,22 @@ ui <- fluidPage(
 
       strong(p("NOTE: This application is still in development.")),
 
+      p("This interactive web application allows you to interact and check how walking speed varies with slope of the path according to Tobler's hiking function.
+        This function is the basis of the walking accessibility assessment tool developed by",
+        tags$a("Tang et. al (2020)", href = "https://doi.org/10.1177/2399808320932575"),
+        "."),
+      
 
-      p("This web application lets you to play with the parameters of Tobler's hiking function to see how the walking speed varies with slope of the path.
-             Tobler's hiking function is an exponential function determining the hiking speed, taking into account the slope angle.
-             It was formulated by Waldo Tobler. This function was estimated from empirical data of Eduard Imhof."),
-
-      withMathJax(p("The walking speed $W$ could be expressed as:")),
-
-      # Render equation ------------------
-      # double backslash required to avoid being truncated
       # Inline math symbols needs to wrap with withMathJax() function
       # https://shiny.rstudio.com/gallery/mathjax.html
+            
+      withMathJax(p(tags$a("Tobler's hiking function", href = "https://en.wikipedia.org/wiki/Tobler%27s_hiking_function"),
+                    "is an exponential function determining walking speed, taking into account the slope angle.",
+                    "The walking speed $W$ could be expressed as:")),
+
+
+      # Render equation ------------------
+      # double backslash (instead of single) since first backslash will be truncated
 
       p("$$ W = Me^{-3.5 \\times \\left\\lvert tan \\theta + 0.05 \\right\\rvert} $$"),
 
@@ -92,7 +97,8 @@ ui <- fluidPage(
 
   h3("How long does it take?"),
 
-  p("With your walking speed given above, how long does take to finish the path with the slope of...?"),
+  p("With your walking speed given above, what will be the time needed to finish a path?
+    Enter a path length below. See how long you need to finish the paths with same length, yet with different slope."),
 
   numericInput(
     inputId = "custom_length",
@@ -105,7 +111,7 @@ ui <- fluidPage(
 
   br(),
 
-  p("The walking time on the following paths will be:"),
+  p("The walking time to finish the following paths will be:"),
 
   fluidRow(
     column(
@@ -147,13 +153,14 @@ ui <- fluidPage(
         br(),
         br(),
         
+            
         sliderInput(
-          inputId = "custom_slope",
-          label = "Slope (degree)",
-          min = 0, max = 45, step = .5,
-          value = 5,
-          width = "90%")
-        ),
+        inputId = "custom_slope",
+        label = "Slope (degree)",
+        min = 0, max = 45, step = .1,
+        value = 5,
+        width = "80%")
+      ),
 
       textOutput(outputId = "custom_uphill"),
       textOutput(outputId = "custom_downhill")
@@ -176,10 +183,10 @@ server <- function(input, output, session, ...) {
 
     speed_flat_terrain <- toblers_hiking_function(0, input$speed)
 
-    dummydata <- data.frame(slope = seq(-45, 45, by = .05)) %>%
+    tobler_data <- data.frame(slope = seq(-50, 50, by = .05)) %>%
       mutate(speed = toblers_hiking_function(slope, input$speed))
 
-    tobler_plot <- ggplot(dummydata, aes(x = slope, y = speed)) +
+    tobler_plot <- ggplot(tobler_data, aes(x = slope, y = speed)) +
       # geom_line(color = "#2c3e50", aes(
       #   text = paste("Slope:",round(slope, 2), "degrees", "\nWalking Speed:", round(speed, 2), "km/hr")
       #   )) +
@@ -208,7 +215,7 @@ server <- function(input, output, session, ...) {
 
 
   # Render walking time ----------
-  # possibly use lapply would be more efficient
+  # using lapply() would possibly be more efficient
   # https://community.rstudio.com/t/how-do-i-use-for-loop-in-rendering-outputs/35761
 
 
