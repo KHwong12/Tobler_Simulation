@@ -24,45 +24,48 @@ ui <- fluidPage(
   includeCSS("style.css"),
 
   # Head ----------
-  titlePanel("Tobler's hiking function"),
+  titlePanel("Tobler's hiking function simulator"),
 
-  h3("Simulating the effects of terrain slope to walking speed"),
+  h3("Effects of terrain slope to walking speed"),
 
   br(),
+  
 
-  # Top panel ----------
-
-  fluidRow(
-    withMathJax(),
-
-
-    column(
-      5,
-
-      strong(p("NOTE: This application is still in development.")),
-
-      p("This interactive web application allows you to interact and check how walking speed varies with slope of the path according to Tobler's hiking function.
+  # Top panel ---------
+  
+  strong(p("NOTE: This application is still in development.")),
+  
+  p("This interactive web application allows you to interact and check how walking speed varies with slope of the path according to Tobler's hiking function.
         This function is the basis of the walking accessibility assessment tool developed by",
-        tags$a("Tang et. al (2020)", href = "https://doi.org/10.1177/2399808320932575"),
-        "."),
-      
+    tags$a("Tang et. al (2020)", href = "https://doi.org/10.1177/2399808320932575"), "."),
+  
+  
+  # Inline math symbols needs to wrap with withMathJax() function
+  # https://shiny.rstudio.com/gallery/mathjax.html
+  
+  withMathJax(p(tags$a("Tobler's hiking function", href = "https://en.wikipedia.org/wiki/Tobler%27s_hiking_function"),
+                "is an exponential function determining walking speed, taking into account the slope angle.",
+                "The walking speed $W$ could be expressed as:")),
+  
+  
+  # Render equation ------------------
+  # double backslash (instead of single) since first backslash will be truncated
+  
+  p("$$ W = Me^{-3.5 \\times \\left\\lvert tan \\theta + 0.05 \\right\\rvert} $$"),
+  
+  withMathJax(p("Where $\\theta$ is the slope and $M$ is maximum walking speed.")),
+  
+  br(),
+  
+  
+  # Mid panel ----------
 
-      # Inline math symbols needs to wrap with withMathJax() function
-      # https://shiny.rstudio.com/gallery/mathjax.html
-            
-      withMathJax(p(tags$a("Tobler's hiking function", href = "https://en.wikipedia.org/wiki/Tobler%27s_hiking_function"),
-                    "is an exponential function determining walking speed, taking into account the slope angle.",
-                    "The walking speed $W$ could be expressed as:")),
-
-
-      # Render equation ------------------
-      # double backslash (instead of single) since first backslash will be truncated
-
-      p("$$ W = Me^{-3.5 \\times \\left\\lvert tan \\theta + 0.05 \\right\\rvert} $$"),
-
-      withMathJax(p("Where $\\theta$ is the slope and $M$ is maximum walking speed.")),
-
-      br(),
+  # fluidRow(
+  #   withMathJax(),
+  # 
+  # 
+  #   column(
+  #     3,
 
       h3("How to Use"),
 
@@ -75,11 +78,11 @@ ui <- fluidPage(
         tags$li("Check the walking time for the selected paths below.")
       ),
 
-      br()
-    ),
+      br(),
+    # ),
 
-    column(
-      7,
+    # column(
+    #   9,
       sliderInput(
         inputId = "speed",
         label = "Walking speed on flat surface (km/hr)",
@@ -87,9 +90,9 @@ ui <- fluidPage(
         value = 5
       ),
 
-      plotlyOutput("toblerPlot")
-    )
-  ),
+      plotlyOutput("toblerPlot"),
+  #   )
+  # ),
 
   hr(),
 
@@ -118,7 +121,7 @@ ui <- fluidPage(
       3,
       h4("Flat Terrain"),
       img(src = "https://1.bp.blogspot.com/-wEygfnu5_mc/V5jHkBSzzLI/AAAAAAAA80w/DdLElofgt_Qn8RbZStkfWjnXhIH8n7cpgCLcB/s200/walking_businesswoman.png",
-          style = "height:200px;"),
+          style = "height:150px;"),
       textOutput(outputId = "eg1_uphill"),
       textOutput(outputId = "eg1_downhill")
     ),
@@ -127,7 +130,7 @@ ui <- fluidPage(
       3,
       h4("2.86° Slope"),
       img(src = "https://1.bp.blogspot.com/-59_nvImHVnM/XkZdUFSPVeI/AAAAAAABXWQ/Vbu2acjd6dwZjOoQIhRGeYjKPY2EtUCewCNcBGAsYHQ/s200/yagai_kyoushitsu_casual_walk.png",
-          style = "height:200px;"),
+          style = "height:150px;"),
       textOutput(outputId = "eg2_uphill"),
       textOutput(outputId = "eg2_downhill")
     ),
@@ -136,7 +139,7 @@ ui <- fluidPage(
       3,
       h4("20° Slope"),
       img(src = "https://2.bp.blogspot.com/-78mChg3NsLQ/VGLMgDJiciI/AAAAAAAApBk/3zAG9kQK1Fg/s200/noborizaka_saka.png",
-          style = "height:200px;"),
+          style = "height:150px;"),
       textOutput(outputId = "eg3_uphill"),
       textOutput(outputId = "eg3_downhill")
     ),
@@ -148,7 +151,7 @@ ui <- fluidPage(
       
       # 200px height, same as the illustrations
       div(
-        style = "height:200px;",
+        style = "height:150px;",
         
         br(),
         br(),
@@ -178,6 +181,7 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session, ...) {
+  
   output$toblerPlot <- renderPlotly({
     req(input$speed)
 
@@ -223,12 +227,10 @@ server <- function(input, output, session, ...) {
   slope_list <- c(0, 2.86, 20)
 
   lapply(1:3, function(example_num) {
-    outputId <- glue::glue("eg{example_num}_uphill")
-    # outputId <- paste0("eg", example_num, "_uphill")
-
+    uphill_ID <- glue::glue("eg{example_num}_uphill")
 
     # All input$ elements needs to be inside a render() function
-    output[[outputId]] <- renderText({
+    output[[uphill_ID]] <- renderText({
       slope_speed <- toblers_hiking_function(slope_list[example_num], input$speed) / 3.6
       time_render <- round(walking_time(slope_speed, input$custom_length), 2)
 
@@ -238,12 +240,10 @@ server <- function(input, output, session, ...) {
 
   
   lapply(1:3, function(example_num) {
-    outputId <- glue::glue("eg{example_num}_downhill")
-    # outputId <- paste0("eg", example_num, "_uphill")
-    
+    downhill_ID <- glue::glue("eg{example_num}_downhill")
     
     # All input$ elements needs to be inside a render() function
-    output[[outputId]] <- renderText({
+    output[[downhill_ID]] <- renderText({
       slope_speed <- toblers_hiking_function(-slope_list[example_num], input$speed) / 3.6
       time_render <- round(walking_time(slope_speed, input$custom_length), 2)
       

@@ -1,3 +1,12 @@
+body {
+  width: 80%;
+  max-width: 720px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
 h4 {
   text-align: center;
 }
@@ -35,7 +44,7 @@ footer {
   border: 1px solid #2c3e50;
 }
 
-.irs-single{
+.irs-single {
   background: #2c3e50;
 }
 
