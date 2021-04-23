@@ -10,6 +10,8 @@ library(plotly)
 library(magrittr)
 library(stringr)
 
+library(glue)
+
 source("R/tobler.R")
 
 # Types of input widgets
