@@ -42,7 +42,7 @@ ui <- fluidPage(
       strong(p("NOTE: This application is still in development.")),
 
       p("This interactive web application allows you to interact and check how walking speed varies with slope of the path according to Tobler's hiking function.
-        This function is the basis of the walking accessibility assessment tool developed by",
+        This function serves the basis of Walking Accessibility Assessment Tool (WAAT) developed by",
         tags$a("Tang et. al (2020)", href = "https://doi.org/10.1177/2399808320932575"),
         "."),
       
@@ -74,6 +74,8 @@ ui <- fluidPage(
         tags$li("Move along the plot on the right to observe the relationship."),
         tags$li("Check the walking time for the selected paths below.")
       ),
+      
+      p("For reference, ground speed of a normal adult is 5 km/hr. Older adults who are healthy generally will have ground walking speed around 3.24 - 4.68 km/hr."),
 
       br()
     ),
