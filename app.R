@@ -88,6 +88,8 @@ ui <- fluidPage(
         min = 0.1, max = 8, step = .1,
         value = 5
       ),
+      
+      br(),
 
       plotlyOutput("toblerPlot")
     )
@@ -198,7 +200,8 @@ server <- function(input, output, session, ...) {
       theme_minimal() +
       labs(
         x = "Slope of the path (°)",
-        y = "Walking speed (km/hr)"
+        y = "Walking speed (km/hr)",
+        title = "Tobler's hiking function – how walking speed is determined by the slope"
       )
 
     # ggplotly(tobler_plot, tooltip = c("text"))
