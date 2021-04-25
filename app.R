@@ -76,27 +76,21 @@ ui <- fluidPage(
       3,
       h4("Flat Terrain"),
       img(src = "https://1.bp.blogspot.com/-wEygfnu5_mc/V5jHkBSzzLI/AAAAAAAA80w/DdLElofgt_Qn8RbZStkfWjnXhIH8n7cpgCLcB/s200/walking_businesswoman.png",
-          style = "height:200px;"),
-      textOutput(outputId = "eg1_uphill"),
-      textOutput(outputId = "eg1_downhill")
+          style = "height:200px;")
     ),
 
     column(
       3,
       h4("2.86° Slope"),
       img(src = "https://1.bp.blogspot.com/-59_nvImHVnM/XkZdUFSPVeI/AAAAAAABXWQ/Vbu2acjd6dwZjOoQIhRGeYjKPY2EtUCewCNcBGAsYHQ/s200/yagai_kyoushitsu_casual_walk.png",
-          style = "height:200px;"),
-      textOutput(outputId = "eg2_uphill"),
-      textOutput(outputId = "eg2_downhill")
+          style = "height:200px;")
     ),
 
     column(
       3,
       h4("20° Slope"),
       img(src = "https://2.bp.blogspot.com/-78mChg3NsLQ/VGLMgDJiciI/AAAAAAAApBk/3zAG9kQK1Fg/s200/noborizaka_saka.png",
-          style = "height:200px;"),
-      textOutput(outputId = "eg3_uphill"),
-      textOutput(outputId = "eg3_downhill")
+          style = "height:200px;")
     ),
 
 
@@ -118,8 +112,32 @@ ui <- fluidPage(
         min = 0, max = 45, step = .1,
         value = 5,
         width = "80%")
-      ),
-
+      )
+    )
+  ),
+  
+  fluidRow(
+    column(
+      3,
+      textOutput(outputId = "eg1_uphill"),
+      textOutput(outputId = "eg1_downhill")
+    ),
+    
+    column(
+      3,
+      textOutput(outputId = "eg2_uphill"),
+      textOutput(outputId = "eg2_downhill")
+    ),
+    
+    column(
+      3,
+      textOutput(outputId = "eg3_uphill"),
+      textOutput(outputId = "eg3_downhill")
+    ),
+    
+    
+    column(
+      3,
       textOutput(outputId = "custom_uphill"),
       textOutput(outputId = "custom_downhill")
     )
