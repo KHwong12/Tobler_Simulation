@@ -11,6 +11,7 @@ library(magrittr)
 library(stringr)
 
 library(glue)
+library(rmarkdown)
 
 source("R/tobler.R")
 
