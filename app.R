@@ -66,7 +66,6 @@ ui <- fluidPage(
     width = "20%"
   ),
 
-
   br(),
 
   p("The walking time to finish the following paths will be:"),
@@ -75,22 +74,22 @@ ui <- fluidPage(
     column(
       3,
       h4("Flat Terrain"),
-      img(src = "https://1.bp.blogspot.com/-wEygfnu5_mc/V5jHkBSzzLI/AAAAAAAA80w/DdLElofgt_Qn8RbZStkfWjnXhIH8n7cpgCLcB/s200/walking_businesswoman.png",
-          style = "height:200px;")
+      img(src = "walk-flat-terrain.png",
+          style = "height:150px;")
     ),
 
     column(
       3,
-      h4("2.86° Slope"),
-      img(src = "https://1.bp.blogspot.com/-59_nvImHVnM/XkZdUFSPVeI/AAAAAAABXWQ/Vbu2acjd6dwZjOoQIhRGeYjKPY2EtUCewCNcBGAsYHQ/s200/yagai_kyoushitsu_casual_walk.png",
-          style = "height:200px;")
+      h4("2.86° Slope (1:20 Gradient)"),
+      img(src = "casual-walk.png",
+          style = "height:150px;")
     ),
 
     column(
       3,
       h4("20° Slope"),
-      img(src = "https://2.bp.blogspot.com/-78mChg3NsLQ/VGLMgDJiciI/AAAAAAAApBk/3zAG9kQK1Fg/s200/noborizaka_saka.png",
-          style = "height:200px;")
+      img(src = "uphill-slope.png",
+          style = "height:150px;")
     ),
 
 
@@ -100,12 +99,8 @@ ui <- fluidPage(
       
       # 200px height, same as the illustrations
       div(
-        style = "height:200px;",
-        
-        br(),
-        br(),
-        
-            
+        style = "height:200px;margin: auto;",
+
         sliderInput(
         inputId = "custom_slope",
         label = "Slope (degree)",
@@ -116,6 +111,7 @@ ui <- fluidPage(
     )
   ),
   
+  # computed walking time
   fluidRow(
     column(
       3,
