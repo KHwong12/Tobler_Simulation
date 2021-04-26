@@ -36,6 +36,8 @@ ui <- fluidPage(
   # Top panel ----------
   
   withMathJax(htmltools::includeMarkdown("./md/usage.md")),
+  
+  br(),
 
   sliderInput(
     inputId = "speed",
