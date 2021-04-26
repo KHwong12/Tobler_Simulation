@@ -11,7 +11,7 @@ library(magrittr)
 library(stringr)
 
 library(glue)
-library(rmarkdown)
+library(markdown) # includeMarkdown
 
 source("R/tobler.R")
 
